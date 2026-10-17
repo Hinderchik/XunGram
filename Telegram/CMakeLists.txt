@@ -1960,6 +1960,8 @@ PRIVATE
     settings/sections/settings_shortcuts.h
     settings/sections/settings_websites.cpp
     settings/sections/settings_websites.h
+    settings/sections/settings_xungram.cpp
+    settings/sections/settings_xungram.h
     storage/details/storage_file_utilities.cpp
     storage/details/storage_file_utilities.h
     storage/details/storage_settings_scheme.cpp
@@ -2354,6 +2356,21 @@ PRIVATE
     tray_accounts_menu.h
     tray.cpp
     tray.h
+)
+
+# XunGram extra layer: isolated sources, keep merges with upstream minimal.
+nice_target_sources(Telegram ${src_loc}
+PRIVATE
+    extra/extra.cpp
+    extra/extra.h
+
+    extra/seam/hooks.cpp
+    extra/seam/hooks.h
+
+    extra/host/engine.cpp
+    extra/host/engine.h
+    extra/host/manifest.cpp
+    extra/host/manifest.h
 )
 
 if (APPLE)

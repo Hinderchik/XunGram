@@ -20,6 +20,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "base/concurrent_timer.h"
 #include "base/options.h"
 
+#include "extra/extra.h"
+
 #include <QtCore/QLoggingCategory>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QLibraryInfo>
@@ -339,6 +341,7 @@ Launcher::~Launcher() {
 void Launcher::init() {
 	prepareSettings();
 	initQtMessageLogging();
+	Extra::Initialize();
 
 	QApplication::setApplicationName(u"TelegramDesktop"_q);
 

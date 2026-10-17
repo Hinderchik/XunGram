@@ -76,6 +76,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "ui/boxes/confirm_box.h"
 #include "apiwrap.h"
 #include "ui/text/format_values.h" // Ui::FormatPhone
+#include "extra/seam/hooks.h"
 
 namespace Api {
 namespace {
@@ -896,6 +897,7 @@ void Updates::mtpNewSessionCreated() {
 }
 
 void Updates::mtpUpdateReceived(const MTPUpdates &updates) {
+	Extra::Hooks::OnUpdate();
 	Core::App().checkAutoLock();
 	_lastUpdateTime = crl::now();
 	_noUpdatesTimer.callOnce(kNoUpdatesTimeout);

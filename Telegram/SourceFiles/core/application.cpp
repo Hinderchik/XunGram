@@ -31,6 +31,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "core/proxy_rotation_manager.h"
 #include "core/ui_integration.h"
 #include "core/version.h"
+#include "extra/extra.h"
 #include "chat_helpers/emoji_keywords.h"
 #include "chat_helpers/stickers_emoji_image_loader.h"
 #include "base/platform/base_platform_global_shortcuts.h"
@@ -351,6 +352,8 @@ void Application::run() {
 	Media::Player::start(_audio.get());
 	Media::Encode::ClearStaleTempFiles();
 	Storage::ClearStaleArchiveFiles();
+
+	Extra::Initialize();
 
 	if (MediaControlsManager::Supported()) {
 		_mediaControlsManager = std::make_unique<MediaControlsManager>();
