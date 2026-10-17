@@ -76,7 +76,7 @@ jobs:
           test -x out/Debug/Telegram || (ls -la out/Debug/ || true; exit 1)
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Telegram-Linux-Debug
           path: out/Debug/{Telegram,Updater}
