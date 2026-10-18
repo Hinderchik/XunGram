@@ -42,7 +42,7 @@ jobs:
           DEBUG= LTO= python3 gen_dockerfile.py > Dockerfile.generated
 
       - name: Build libraries image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: Telegram/build/docker/centos_env
           file: Telegram/build/docker/centos_env/Dockerfile.generated
