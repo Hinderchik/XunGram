@@ -44,9 +44,6 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
-        with:
-          driver-opts: image=moby/buildkit:latest
-          buildkitd-flags: --debug
 
       - name: Generate Dockerfile
         run: |
@@ -59,14 +56,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}/docker-image-cache
-          key: docker-image-${{ hashFiles('Telegram/build/docker/centos_env/Dockerfile.generated') }}
-          restore-keys: |
-            docker-image-
+          key: docker-centos-env-${{ hashFiles('Telegram/build/docker/centos_env/Dockerfile') }}
 
       - name: Load Docker cache (if available)
         if: steps.docker-cache.outputs.cache-hit == 'true'
-        run: |
-          docker load -i ${{ runner.temp }}/docker-image-cache/image.tar
+        run: docker load -i ${{ runner.temp }}/docker-image-cache/image.tar
 
       - name: Build libraries image
         if: steps.docker-cache.outputs.cache-hit != 'true'
