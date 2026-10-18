@@ -25,8 +25,6 @@ jobs:
     name: Linux x86_64 Build
     runs-on: ubuntu-latest
     timeout-minutes: 360
-    env:
-      CCACHE_DIR: ${{ runner.temp }}/.ccache
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,19 +41,7 @@ jobs:
           cd Telegram/build/docker/centos_env
           DEBUG= LTO= python3 gen_dockerfile.py > Dockerfile.generated
 
-      - name: Cache Docker image
-        id: docker-cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ runner.temp }}/docker-image-cache
-          key: docker-centos-env-${{ hashFiles('Telegram/build/docker/centos_env/Dockerfile') }}
-
-      - name: Load Docker cache
-        if: steps.docker-cache.outputs.cache-hit == 'true'
-        run: docker load -i ${{ runner.temp }}/docker-image-cache/image.tar
-
       - name: Build libraries image
-        if: steps.docker-cache.outputs.cache-hit != 'true'
         uses: docker/build-push-action@v6
         with:
           context: Telegram/build/docker/centos_env
@@ -65,19 +51,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Save Docker cache
-        if: steps.docker-cache.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p ${{ runner.temp }}/docker-image-cache
-          docker save tdesktop:centos_env > ${{ runner.temp }}/docker-image-cache/image.tar
-
       - name: Build Telegram
         run: |
-          docker run --rm \
-            -u $(id -u) \
+          docker run --rm -u $(id -u) \
             -v $PWD:/usr/src/tdesktop \
-            -v ${{ env.CCACHE_DIR }}:/var/cache/ccache \
-            -e CONFIG=Debug \
             tdesktop:centos_env \
             /usr/src/tdesktop/Telegram/build/docker/centos_env/build.sh \
             -D CMAKE_CONFIGURATION_TYPES=Debug \
