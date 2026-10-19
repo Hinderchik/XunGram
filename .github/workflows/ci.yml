@@ -25,6 +25,8 @@ jobs:
     name: Linux x86_64 Build
     runs-on: ubuntu-latest
     timeout-minutes: 360
+    env:
+      CCACHE_DIR: ${{ runner.temp }}/.ccache
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
@@ -48,6 +50,15 @@ jobs:
           cd Telegram/build/docker/centos_env
           DEBUG= LTO= python3 gen_dockerfile.py > Dockerfile.generated
 
+      - name: Cache ccache
+        id: ccache-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/.ccache
+          key: ${{ runner.os }}-ccache-${{ hashFiles('Telegram/SourceFiles/**/*.cpp', 'Telegram/SourceFiles/**/*.h', 'Telegram/CMakeLists.txt', 'Telegram/lib_*/CMakeLists.txt', 'cmake/**/*.cmake') }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-
+
       - name: Build libraries image
         uses: docker/build-push-action@v6
         with:
@@ -55,14 +66,17 @@ jobs:
           file: Telegram/build/docker/centos_env/Dockerfile.generated
           tags: tdesktop:centos_env
           load: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Build Telegram
         run: |
           docker run --rm -u $(id -u) \
             -v $PWD:/usr/src/tdesktop \
+            -v ${{ env.CCACHE_DIR }}:/var/cache/ccache \
             -e CONFIG=Release \
+            -e CCACHE_DIR=/var/cache/ccache \
+            -e CCACHE_COMPRESS=1 \
+            -e CCACHE_MAXSIZE=2G \
+            -e CMAKE_BUILD_PARALLEL_LEVEL=6 \
             tdesktop:centos_env \
             /usr/src/tdesktop/Telegram/build/docker/centos_env/build.sh \
             -D CMAKE_CONFIGURATION_TYPES=Release \
