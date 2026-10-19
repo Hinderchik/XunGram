@@ -1960,8 +1960,6 @@ PRIVATE
     settings/sections/settings_shortcuts.h
     settings/sections/settings_websites.cpp
     settings/sections/settings_websites.h
-    settings/sections/settings_xungram.cpp
-    settings/sections/settings_xungram.h
     storage/details/storage_file_utilities.cpp
     storage/details/storage_file_utilities.h
     storage/details/storage_settings_scheme.cpp
