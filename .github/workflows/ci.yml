@@ -26,6 +26,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+          docker-images: false
+          swap-storage: false
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -55,21 +62,23 @@ jobs:
         run: |
           docker run --rm -u $(id -u) \
             -v $PWD:/usr/src/tdesktop \
-            -e CONFIG=Debug \
+            -e CONFIG=Release \
             tdesktop:centos_env \
             /usr/src/tdesktop/Telegram/build/docker/centos_env/build.sh \
-            -D CMAKE_CONFIGURATION_TYPES=Debug \
+            -D CMAKE_CONFIGURATION_TYPES=Release \
             -D TDESKTOP_API_TEST=ON \
-            -D CMAKE_COMPILE_WARNING_AS_ERROR=OFF
+            -D CMAKE_COMPILE_WARNING_AS_ERROR=OFF \
+            -D CMAKE_C_FLAGS_RELEASE="-O2" \
+            -D CMAKE_CXX_FLAGS_RELEASE="-O2"
 
       - name: Check artifact
         run: |
-          test -x out/Debug/Telegram || (ls -la out/Debug/ || true; exit 1)
+          test -x out/Release/Telegram || (ls -la out/Release/ || true; exit 1)
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Telegram-Linux-Debug
-          path: out/Debug/{Telegram,Updater}
+          name: Telegram-Linux-Release
+          path: out/Release/{Telegram,Updater}
           if-no-files-found: error
           retention-days: 7
