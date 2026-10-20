@@ -25,8 +25,6 @@ jobs:
     name: Linux x86_64 Build
     runs-on: ubuntu-latest
     timeout-minutes: 360
-    env:
-      CCACHE_DIR: ${{ runner.temp }}/.ccache
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
@@ -54,7 +52,7 @@ jobs:
         id: ccache-cache
         uses: actions/cache@v4
         with:
-          path: ${{ runner.temp }}/.ccache
+          path: ${{ github.workspace }}/.ccache
           key: ${{ runner.os }}-ccache-${{ hashFiles('Telegram/SourceFiles/**/*.cpp', 'Telegram/SourceFiles/**/*.h', 'Telegram/CMakeLists.txt', 'Telegram/lib_*/CMakeLists.txt', 'cmake/**/*.cmake') }}
           restore-keys: |
             ${{ runner.os }}-ccache-
@@ -71,7 +69,7 @@ jobs:
         run: |
           docker run --rm -u $(id -u) \
             -v $PWD:/usr/src/tdesktop \
-            -v ${{ env.CCACHE_DIR }}:/var/cache/ccache \
+            -v ${{ github.workspace }}/.ccache:/var/cache/ccache \
             -e CONFIG=Release \
             -e CCACHE_DIR=/var/cache/ccache \
             -e CCACHE_COMPRESS=1 \
