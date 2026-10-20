@@ -75,6 +75,8 @@ jobs:
             -e CCACHE_COMPRESS=1 \
             -e CCACHE_MAXSIZE=2G \
             -e CMAKE_BUILD_PARALLEL_LEVEL=6 \
+            -e TDESKTOP_API_ID=33927119 \
+            -e TDESKTOP_API_HASH=44f7cf061c898a0c6e06f13b03f7b462 \
             tdesktop:centos_env \
             /usr/src/tdesktop/Telegram/build/docker/centos_env/build.sh \
             -D CMAKE_CONFIGURATION_TYPES=Release \
