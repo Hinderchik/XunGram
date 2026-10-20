@@ -1090,7 +1090,6 @@ patch -p1 -d /usr/lib64/gobject-introspection -i $PWD/patches/gobject-introspect
 rm -rf patches
 EOF
 
-ENV CCACHE_DISABLE=0
 WORKDIR /usr/src/tdesktop
 USER user
 VOLUME [ "/usr/src/tdesktop" ]
