@@ -67,7 +67,7 @@ jobs:
 
       - name: Build Telegram
         run: |
-          docker run --rm -u $(id -u) \
+          docker run --rm -u root \
             -v $PWD:/usr/src/tdesktop \
             -v ${{ github.workspace }}/.ccache:/var/cache/ccache \
             -e CONFIG=Release \
